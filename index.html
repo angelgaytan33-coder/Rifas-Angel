@@ -22,10 +22,27 @@
 
     .wrap{max-width:1100px;margin:0 auto;padding:16px}
 
-    .hero{padding:24px 18px;border-radius:var(--radius);box-shadow:var(--shadow)}
+    .hero{
+      padding:24px 18px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      display:flex;
+      align-items:center;
+      gap:20px;
+    }
 
-    .title{font-size:clamp(26px,6vw,42px)}
-    .subtitle{font-size:clamp(14px,4vw,16px)}
+    .hero img{
+      width:90px;
+      height:auto;
+      border-radius:12px;
+    }
+
+    .hero-text{
+      flex:1;
+    }
+
+    .title{font-size:clamp(26px,6vw,42px);margin:0}
+    .subtitle{font-size:clamp(14px,4vw,16px);margin:6px 0 0}
 
     .cta{display:flex;flex-wrap:wrap;gap:10px}
     .btn{
@@ -84,14 +101,19 @@
       .wrap{padding:10px}
       .btn{padding:10px 14px;font-size:14px}
       .nums{grid-template-columns:repeat(auto-fit,minmax(40px,1fr))}
+      .hero{flex-direction:column;text-align:center}
+      .hero img{width:70px}
     }
   </style>
 </head>
 <body>
   <div class="wrap">
     <section class="hero card">
-      <h1 class="title">🎟️ Rifas de Angel</h1>
-      <p class="subtitle">Participa por premios en efectivo. Solo $40 por boleto.</p>
+      <img src="logo_rifas.png" alt="Logo Rifas de Angel">
+      <div class="hero-text">
+        <h1 class="title">🎟️ Rifas de Angel</h1>
+        <p class="subtitle">Participa por premios en efectivo. Solo $40 por boleto.</p>
+      </div>
     </section>
 
     <section class="grid cards">
@@ -128,7 +150,7 @@
     const numerosDiv = document.getElementById("numeros");
     const resumenDiv = document.getElementById("resumen");
     const seleccionados = new Set();
-    const elementos = {}; // guardamos referencia de cada número
+    const elementos = {}; 
 
     function actualizarResumen(){
       if(seleccionados.size===0){
@@ -148,7 +170,7 @@
       num.textContent=String(i).padStart(2,"0");
 
       num.onclick=()=> {
-        if(num.classList.contains("ocupado")) return; // no se puede si está ocupado
+        if(num.classList.contains("ocupado")) return;
 
         if(seleccionados.has(i)){
           seleccionados.delete(i);
@@ -174,13 +196,12 @@
       const msg = `Hola, quiero apartar los números: ${lista} (${seleccionados.size} boletos = $${total}) para la rifa.`;
       window.open(`https://wa.me/5218126515543?text=${encodeURIComponent(msg)}`,"_blank");
 
-      // 🔴 Bloquear los seleccionados después de apartarlos
       seleccionados.forEach(n=>{
         const elem = elementos[n];
         if(elem){
           elem.classList.remove("selected");
           elem.classList.add("ocupado");
-          elem.onclick = null; // ya no responde
+          elem.onclick = null;
         }
       });
       seleccionados.clear();
