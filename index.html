@@ -39,6 +39,8 @@
       text-decoration:none;
       font-weight:700;
       box-shadow:var(--shadow);
+      cursor:pointer;
+      border:none;
     }
     .btn:hover{background:var(--brand-2)}
 
@@ -60,8 +62,17 @@
       cursor:pointer;
       text-align:center;
       transition:background .2s;
+      user-select:none;
     }
     .num:hover{background:var(--brand)}
+    .num.selected{background:var(--ok);color:#000}
+
+    .resumen{
+      margin:15px 0;
+      font-size:16px;
+      color:var(--ink);
+      text-align:center;
+    }
 
     /* Ajustes extra en pantallas muy chicas */
     @media(max-width:480px){
@@ -76,9 +87,6 @@
     <section class="hero card">
       <h1 class="title">🎟️ Rifas de Angel</h1>
       <p class="subtitle">Participa por premios en efectivo. Solo $40 por boleto.</p>
-      <div class="cta">
-        <a class="btn" href="https://wa.me/5218126515543" target="_blank" rel="noopener noreferrer">📲 Apartar por WhatsApp</a>
-      </div>
     </section>
 
     <section class="grid cards">
@@ -99,29 +107,64 @@
     <section class="card">
       <h3>Boletos Disponibles</h3>
       <div class="nums" id="numeros"></div>
+
+      <!-- 🔹 Resumen dinámico -->
+      <div class="resumen" id="resumen">Selecciona tus boletos</div>
+
+      <div style="margin-top:20px;text-align:center;">
+        <button class="btn" onclick="enviarSeleccion()">📲 Apartar seleccionados</button>
+      </div>
     </section>
   </div>
 
   <script>
     const TOTAL = 80;
-    // 🔴 Aquí actualizas los números ocupados
+    const PRECIO = 40; // precio por boleto
     const ocupados = [3,4,5,6,7,8,9,10,11,13,14,15,17,19,22,23,25,27,28,29,30,32,35,40,43,44,45,46,53,54,55,64,75,77];
-
     const numerosDiv = document.getElementById("numeros");
-  numerosDiv.innerHTML = ""; // limpiar por si se vuelve a generar
+    const resumenDiv = document.getElementById("resumen");
+    const seleccionados = new Set();
 
-  for(let i=0;i<TOTAL;i++){ 
-    if(ocupados.includes(i)) continue; // ❌ No mostrar ocupados
+    function actualizarResumen(){
+      if(seleccionados.size===0){
+        resumenDiv.textContent = "Selecciona tus boletos";
+      } else {
+        const lista = Array.from(seleccionados).map(n=>String(n).padStart(2,"0")).sort().join(", ");
+        const total = seleccionados.size * PRECIO;
+        resumenDiv.textContent = `Seleccionaste: ${lista} (${seleccionados.size} boletos = $${total})`;
+      }
+    }
 
-    const num=document.createElement("div");
-    num.className="num";
-    num.textContent=String(i).padStart(2,"0"); // 👉 00, 01, 02... 79
-    num.onclick=()=> {
-      
-      const msg = `Hola, quiero apartar el número ${num.textContent} para la rifa.`;
-        window.open(`https://wa.me/5218126515543?text=${encodeURIComponent(msg)}`,"_blank");
+    for(let i=0;i<TOTAL;i++){ 
+      if(ocupados.includes(i)) continue;
+
+      const num=document.createElement("div");
+      num.className="num";
+      num.textContent=String(i).padStart(2,"0");
+
+      num.onclick=()=> {
+        if(seleccionados.has(i)){
+          seleccionados.delete(i);
+          num.classList.remove("selected");
+        } else {
+          seleccionados.add(i);
+          num.classList.add("selected");
+        }
+        actualizarResumen();
       };
+
       numerosDiv.appendChild(num);
+    }
+
+    function enviarSeleccion(){
+      if(seleccionados.size===0){
+        alert("Selecciona al menos un número.");
+        return;
+      }
+      const lista = Array.from(seleccionados).map(n=>String(n).padStart(2,"0")).sort().join(", ");
+      const total = seleccionados.size * PRECIO;
+      const msg = `Hola, quiero apartar los números: ${lista} (${seleccionados.size} boletos = $${total}) para la rifa.`;
+      window.open(`https://wa.me/5218126515543?text=${encodeURIComponent(msg)}`,"_blank");
     }
   </script>
 </body>
