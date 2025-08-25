@@ -49,7 +49,7 @@
 
     .nums{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(50px,1fr));
+      grid-template-columns:repeat(10,1fr);
       gap:8px
     }
     .num{
@@ -59,13 +59,15 @@
       background:#0f1732;
       cursor:pointer;
       text-align:center;
+      transition:background .2s;
     }
-    .apartado{background:var(--bad);color:white;cursor:not-allowed}
+    .num:hover{background:var(--brand)}
 
     /* Ajustes extra en pantallas muy chicas */
     @media(max-width:480px){
       .wrap{padding:10px}
       .btn{padding:10px 14px;font-size:14px}
+      .nums{grid-template-columns:repeat(auto-fit,minmax(40px,1fr))}
     }
   </style>
 </head>
@@ -75,7 +77,7 @@
       <h1 class="title">🎟️ Rifas de Angel</h1>
       <p class="subtitle">Participa por premios en efectivo. Solo $40 por boleto.</p>
       <div class="cta">
-        <a class="btn" href="https://wa.me/5218126515543" target="_blank">📲 Apartar por WhatsApp</a>
+        <a class="btn" href="https://wa.me/5218126515543" target="_blank" rel="noopener noreferrer">📲 Apartar por WhatsApp</a>
       </div>
     </section>
 
@@ -102,21 +104,22 @@
 
   <script>
     const TOTAL = 80;
-    const ocupados = [3,4,6,7,9,10,11,13,15,17,22,23,27,29,30,32,40,45,46,53,55];
-    const numerosDiv = document.getElementById("numeros");
+    // 🔴 Aquí actualizas los números ocupados
+    const ocupados = [3,4,5,6,7,8,9,10,11,13,14,15,17,19,22,23,25,27,28,29,30,32,35,40,43,44,45,46,53,54,55,64,75,77];
 
-    for(let i=0;i<TOTAL;i++){
+    const numerosDiv = document.getElementById("numeros");
+    numerosDiv.innerHTML = ""; // limpiar por si se vuelve a generar
+
+    for(let i=1;i<=TOTAL;i++){ 
+      if(ocupados.includes(i)) continue; // ❌ No lo mostramos si está ocupado
+
       const num=document.createElement("div");
       num.className="num";
       num.textContent=String(i).padStart(2,"0");
-      if(ocupados.includes(i)){
-        num.classList.add("apartado");
-      }else{
-        num.onclick=()=> {
-          const msg = `Hola, quiero apartar el número ${num.textContent} para la rifa.`;
-          window.open(`https://wa.me/5218126515543?text=${encodeURIComponent(msg)}`,"_blank");
-        };
-      }
+      num.onclick=()=> {
+        const msg = `Hola, quiero apartar el número ${num.textContent} para la rifa.`;
+        window.open(`https://wa.me/5218126515543?text=${encodeURIComponent(msg)}`,"_blank");
+      };
       numerosDiv.appendChild(num);
     }
   </script>
