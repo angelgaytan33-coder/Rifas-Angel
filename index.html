@@ -108,16 +108,17 @@
     const ocupados = [3,4,5,6,7,8,9,10,11,13,14,15,17,19,22,23,25,27,28,29,30,32,35,40,43,44,45,46,53,54,55,64,75,77];
 
     const numerosDiv = document.getElementById("numeros");
-    numerosDiv.innerHTML = ""; // limpiar por si se vuelve a generar
+  numerosDiv.innerHTML = ""; // limpiar por si se vuelve a generar
 
-    for(let i=1;i<=TOTAL;i++){ 
-      if(ocupados.includes(i)) continue; // ❌ No lo mostramos si está ocupado
+  for(let i=0;i<TOTAL;i++){ 
+    if(ocupados.includes(i)) continue; // ❌ No mostrar ocupados
 
-      const num=document.createElement("div");
-      num.className="num";
-      num.textContent=String(i).padStart(2,"0");
-      num.onclick=()=> {
-        const msg = `Hola, quiero apartar el número ${num.textContent} para la rifa.`;
+    const num=document.createElement("div");
+    num.className="num";
+    num.textContent=String(i).padStart(2,"0"); // 👉 00, 01, 02... 79
+    num.onclick=()=> {
+      
+      const msg = `Hola, quiero apartar el número ${num.textContent} para la rifa.`;
         window.open(`https://wa.me/5218126515543?text=${encodeURIComponent(msg)}`,"_blank");
       };
       numerosDiv.appendChild(num);
