@@ -37,9 +37,7 @@
       border-radius:12px;
     }
 
-    .hero-text{
-      flex:1;
-    }
+    .hero-text{flex:1;}
 
     .title{font-size:clamp(26px,6vw,42px);margin:0}
     .subtitle{font-size:clamp(14px,4vw,16px);margin:6px 0 0}
@@ -97,6 +95,18 @@
       text-align:center;
     }
 
+    #contador-visitas{
+      position:fixed;
+      bottom:10px;
+      right:10px;
+      background:rgba(19,26,46,0.9);
+      color:white;
+      padding:6px 12px;
+      border-radius:12px;
+      font-size:14px;
+      box-shadow:var(--shadow);
+    }
+
     @media(max-width:480px){
       .wrap{padding:10px}
       .btn{padding:10px 14px;font-size:14px}
@@ -133,6 +143,7 @@
 
     <section class="card">
       <h3>Boletos Disponibles</h3>
+      <div id="progreso-boletos" style="text-align:center; margin:10px 0; font-weight:600;"></div>
       <div class="nums" id="numeros"></div>
 
       <div class="resumen" id="resumen">Selecciona tus boletos</div>
@@ -142,6 +153,9 @@
       </div>
     </section>
   </div>
+
+  <!-- Contador de visitas -->
+  <div id="contador-visitas">👀 Visitas: <span id="visitas">0</span></div>
 
   <script>
     const TOTAL = 80;
@@ -162,8 +176,16 @@
       }
     }
 
+    function actualizarProgreso(){
+      const vendidos = ocupados.length;
+      const porcentaje = Math.round((vendidos / TOTAL) * 100);
+      document.getElementById("progreso-boletos").textContent = 
+        `🎯 Vendidos: ${vendidos} de ${TOTAL} (${porcentaje}%)`;
+    }
+
+    // Generar los boletos
     for(let i=0;i<TOTAL;i++){ 
-      if(ocupados.includes(i)) continue;
+      if(ocupados.includes(i)) continue; // no mostrar ocupados
 
       const num=document.createElement("div");
       num.className="num";
@@ -207,6 +229,16 @@
       seleccionados.clear();
       actualizarResumen();
     }
+
+    // --- Contador de visitas con localStorage ---
+    let visitas = localStorage.getItem("contadorVisitas");
+    if(!visitas) visitas = 0;
+    visitas++;
+    localStorage.setItem("contadorVisitas", visitas);
+    document.getElementById("visitas").textContent = visitas;
+
+    // Mostrar progreso inicial
+    actualizarProgreso();
   </script>
 </body>
 </html>
