@@ -31,17 +31,10 @@
       gap:20px;
     }
 
-    .hero img{
-      width:90px;
-      height:auto;
-      border-radius:12px;
-    }
-
+    .hero img{width:90px;height:auto;border-radius:12px;}
     .hero-text{flex:1;}
-
     .title{font-size:clamp(26px,6vw,42px);margin:0}
     .subtitle{font-size:clamp(14px,4vw,16px);margin:6px 0 0}
-
     .cta{display:flex;flex-wrap:wrap;gap:10px}
     .btn{
       flex:1;
@@ -58,43 +51,42 @@
       border:none;
     }
     .btn:hover{background:var(--brand-2)}
-
     .grid{display:grid;gap:16px}
     .cards{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
-
     .card{background:var(--card);padding:16px;border-radius:var(--radius)}
-
-    .nums{
-      display:grid;
-      grid-template-columns:repeat(10,1fr);
-      gap:8px
-    }
+    .nums{display:grid;grid-template-columns:repeat(10,1fr);gap:8px}
     .num{
-      padding:14px 0;
-      border-radius:12px;
-      font-weight:700;
-      background:#0f1732;
-      cursor:pointer;
-      text-align:center;
-      transition:background .2s;
-      user-select:none;
+      padding:14px 0;border-radius:12px;font-weight:700;
+      background:#0f1732;cursor:pointer;text-align:center;
+      transition:background .2s;user-select:none;
     }
     .num:hover{background:var(--brand)}
     .num.selected{background:var(--ok);color:#000}
-    .num.ocupado{
-      background:var(--bad);
-      color:#fff;
-      cursor:not-allowed;
-      opacity:0.6;
-    }
+    .num.ocupado{background:var(--bad);color:#fff;cursor:not-allowed;opacity:0.6;}
+    .resumen{margin:15px 0;font-size:16px;color:var(--ink);text-align:center;}
 
-    .resumen{
-      margin:15px 0;
+    /* Modal */
+    .modal{
+      display:none;position:fixed;z-index:1000;
+      left:0;top:0;width:100%;height:100%;
+      background:rgba(0,0,0,0.6);backdrop-filter:blur(2px);
+      justify-content:center;align-items:center;
+    }
+    .modal-content{
+      background:var(--card);padding:20px;border-radius:var(--radius);
+      max-width:400px;width:90%;box-shadow:var(--shadow);text-align:center;
+    }
+    .modal-content h3{margin-top:0}
+    .modal-content input{
+      width:100%;padding:10px;margin:10px 0;
+      border-radius:8px;border:1px solid var(--muted);
       font-size:16px;
-      color:var(--ink);
-      text-align:center;
     }
-
+    .modal-content .btn{margin-top:10px;width:100%}
+    .close{
+      position:absolute;top:10px;right:15px;font-size:22px;
+      cursor:pointer;color:white;
+    }
 
     @media(max-width:480px){
       .wrap{padding:10px}
@@ -134,17 +126,27 @@
       <h3>Boletos Disponibles</h3>
       <div id="progreso-boletos" style="text-align:center; margin:10px 0; font-weight:600;"></div>
       <div class="nums" id="numeros"></div>
-
       <div class="resumen" id="resumen">Selecciona tus boletos</div>
-
       <div style="margin-top:20px;text-align:center;">
-        <button class="btn" onclick="enviarSeleccion()">📲 Apartar seleccionados</button>
+        <button class="btn" onclick="abrirModal()">📲 Apartar seleccionados</button>
       </div>
     </section>
   </div>
 
   <!-- Contador de visitas -->
-  <div id="contador-visitas">👀 Visitas: <span id="visitas">0</span></div>
+  <div id="contador-visitas" style="position:fixed;bottom:10px;right:10px;background:var(--card);padding:6px 10px;border-radius:12px;box-shadow:var(--shadow);font-size:14px;">
+    👀 Visitas: <span id="visitas">0</span>
+  </div>
+
+  <!-- Modal para nombre -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <span class="close" onclick="cerrarModal()">&times;</span>
+      <h3>Ingresa tu nombre completo</h3>
+      <input type="text" id="nombreCliente" placeholder="Tu nombre completo">
+      <button class="btn" onclick="confirmarApartado()">✅ Confirmar</button>
+    </div>
+  </div>
 
   <script>
     const TOTAL = 80;
@@ -172,17 +174,14 @@
         `🎯 Vendidos: ${vendidos} de ${TOTAL} (${porcentaje}%)`;
     }
 
-    // Generar los boletos
+    // Generar boletos
     for(let i=0;i<TOTAL;i++){ 
       if(ocupados.includes(i)) continue; // no mostrar ocupados
-
       const num=document.createElement("div");
       num.className="num";
       num.textContent=String(i).padStart(2,"0");
-
       num.onclick=()=> {
         if(num.classList.contains("ocupado")) return;
-
         if(seleccionados.has(i)){
           seleccionados.delete(i);
           num.classList.remove("selected");
@@ -192,21 +191,33 @@
         }
         actualizarResumen();
       };
-
       numerosDiv.appendChild(num);
       elementos[i] = num;
     }
 
-    function enviarSeleccion(){
+    function abrirModal(){
       if(seleccionados.size===0){
         alert("Selecciona al menos un número.");
         return;
       }
+      document.getElementById("modal").style.display="flex";
+    }
+    function cerrarModal(){
+      document.getElementById("modal").style.display="none";
+    }
+
+    function confirmarApartado(){
+      const nombre = document.getElementById("nombreCliente").value.trim();
+      if(nombre===""){
+        alert("Por favor ingresa tu nombre completo.");
+        return;
+      }
       const lista = Array.from(seleccionados).map(n=>String(n).padStart(2,"0")).sort().join(", ");
       const total = seleccionados.size * PRECIO;
-      const msg = `Hola, quiero apartar los números: ${lista} (${seleccionados.size} boletos = $${total}) para la rifa.`;
+      const msg = `Hola, soy ${nombre}. Quiero apartar los números: ${lista} (${seleccionados.size} boletos = $${total}) para la rifa.`;
       window.open(`https://wa.me/5218126515543?text=${encodeURIComponent(msg)}`,"_blank");
 
+      // Marcar seleccionados como ocupados
       seleccionados.forEach(n=>{
         const elem = elementos[n];
         if(elem){
@@ -217,6 +228,7 @@
       });
       seleccionados.clear();
       actualizarResumen();
+      cerrarModal();
     }
 
     // --- Contador de visitas con localStorage ---
@@ -226,7 +238,6 @@
     localStorage.setItem("contadorVisitas", visitas);
     document.getElementById("visitas").textContent = visitas;
 
-    // Mostrar progreso inicial
     actualizarProgreso();
   </script>
 </body>
