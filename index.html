@@ -253,14 +253,7 @@
       });
     }
 
-    // --- Contador de visitas con localStorage ---
-    let visitas = localStorage.getItem("contadorVisitas");
-    if(!visitas) visitas = 0;
-    visitas++;
-    localStorage.setItem("contadorVisitas", visitas);
-    document.getElementById("visitas").textContent = visitas;
 
-    actualizarProgreso();
   </script>
 </body>
 </html>
