@@ -31,7 +31,11 @@
       gap:20px;
     }
 
-    .hero img{width:90px;height:auto;border-radius:12px;}
+    .hero img{
+      width:120px; /* Ajuste para que la imagen sea más visible */
+      height:auto;
+      border-radius:12px;
+    }
     .hero-text{flex:1;}
     .title{font-size:clamp(26px,6vw,42px);margin:0}
     .subtitle{font-size:clamp(14px,4vw,16px);margin:6px 0 0}
@@ -100,15 +104,15 @@
       .wrap{padding:10px}
       .nums{grid-template-columns:repeat(auto-fit,minmax(40px,1fr))}
       .hero{flex-direction:column;text-align:center}
-      .hero img{width:70px}
+      .hero img{width:100px}
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <!-- Hero -->
+    <!-- Hero con imagen del Nintendo Switch -->
     <section class="hero card">
-      <img src="logo_rifas.png" alt="Logo Rifa Nintendo Switch">
+      <img src="nintendo_switch.png" alt="Nintendo Switch">
       <div class="hero-text">
         <h1 class="title">🎮 Rifa Nintendo Switch</h1>
         <p class="subtitle">Participa por un Nintendo Switch. Solo $200 por boleto.</p>
@@ -229,33 +233,4 @@
       const lista = Array.from(seleccionados).map(n=>String(n).padStart(2,"0")).sort().join(", ");
       const total = seleccionados.size * PRECIO;
       const msg = `Hola, soy ${nombre}. Quiero apartar los números: ${lista} (${seleccionados.size} boletos = $${total}) para la rifa del Nintendo Switch.`;
-      window.open(`https://wa.me/5218126515543?text=${encodeURIComponent(msg)}`,"_blank");
-
-      seleccionados.forEach(n=>{
-        const elem = elementos[n];
-        if(elem){
-          elem.classList.remove("selected");
-          elem.classList.add("ocupado");
-          elem.onclick = null;
-        }
-      });
-      seleccionados.clear();
-      actualizarResumen();
-      cerrarModal();
-      actualizarProgreso();
-    }
-
-    // Modal cuenta
-    function abrirCuenta(){ document.getElementById("modalCuenta").style.display="flex"; }
-    function cerrarCuenta(){ document.getElementById("modalCuenta").style.display="none"; }
-    function copiarClabe(){
-      const clabe = document.getElementById("clabe").textContent;
-      navigator.clipboard.writeText(clabe).then(()=>{
-        alert("✅ CLABE copiada al portapapeles");
-      });
-    }
-
-    actualizarProgreso();
-  </script>
-</body>
-</html>
+      window.open(`https://wa.me/521812651554
