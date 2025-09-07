@@ -233,4 +233,33 @@
       const lista = Array.from(seleccionados).map(n=>String(n).padStart(2,"0")).sort().join(", ");
       const total = seleccionados.size * PRECIO;
       const msg = `Hola, soy ${nombre}. Quiero apartar los números: ${lista} (${seleccionados.size} boletos = $${total}) para la rifa del Nintendo Switch.`;
-      window.open(`https://wa.me/521812651554
+      window.open(`https://wa.me/5218126515543?text=${encodeURIComponent(msg)}`,"_blank");
+
+      seleccionados.forEach(n=>{
+        const elem = elementos[n];
+        if(elem){
+          elem.classList.remove("selected");
+          elem.classList.add("ocupado");
+          elem.onclick = null;
+        }
+      });
+      seleccionados.clear();
+      actualizarResumen();
+      cerrarModal();
+      actualizarProgreso();
+    }
+
+    // Modal cuenta
+    function abrirCuenta(){ document.getElementById("modalCuenta").style.display="flex"; }
+    function cerrarCuenta(){ document.getElementById("modalCuenta").style.display="none"; }
+    function copiarClabe(){
+      const clabe = document.getElementById("clabe").textContent;
+      navigator.clipboard.writeText(clabe).then(()=>{
+        alert("✅ CLABE copiada al portapapeles");
+      });
+    }
+
+    actualizarProgreso();
+  </script>
+</body>
+</html>
